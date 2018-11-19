@@ -1,0 +1,5 @@
+<resources>
+    <!--<string name="app_name">嘉陵党建</string>-->
+    <string name="server_prefix"></string>
+    <string name="web_url"></string>
+</resources>

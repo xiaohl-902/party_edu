@@ -1,0 +1,219 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+apply plugin: 'com.android.application'
+
+android {
+
+    //签名配置
+    signingConfigs {
+        config {
+            keyAlias 'jl' //key别名
+            //keyAlias 'dj' //key别名
+            keyPassword '098765' //key密码,最好不要配置在脚本里
+            storeFile file('D:\\fuyb\\documents\\signfiles\\嘉陵党建app\\jldjapp.keystore.jks') //证书路径,证书最好不要放入项目源码
+            //storeFile file('D:\\fuyb\\documents\\signfiles\\ctv.keystore') //证书路径,证书最好不要放入项目源码
+            storePassword '098765' //证书密码,最好不要配置在脚本里
+        }
+    }
+
+    compileSdkVersion 25
+    buildToolsVersion '27.0.3'
+
+    //多渠道打包，在 def currentVersionCode = getVersionCode() 前，否则无法获取到对应的applicationId
+    //flavor.name必须遵守驼峰命名，否则无法根据name准确找到applicationId
+    productFlavors {
+        //统一版本
+        common {
+            applicationId "com.igreatstone.partyconst"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            resValue "string", "app_name", "党建"
+            buildConfigField "String", "WEB_URL", "\"http://10.0.1.66:8181/partyJlTv_Android_shehong/jsp/home.jsp\""
+        }
+        //嘉陵党建-手机、触屏
+        ncjlMobile {
+            applicationId "com.touch.jldj"
+            resValue "string", "app_name", "嘉陵党建"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            buildConfigField "String", "WEB_URL", "\"http://60.255.139.254:8195/partyJlTv_Android_ynx/index.jsp\""
+        }
+        //嘉陵党建-tv
+        ncjlTV {
+            applicationId "com.touch.jldj"
+            resValue "string", "app_name", "嘉陵党建"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            buildConfigField "String", "WEB_URL", "\"http://10.146.0.47:8195/partyJlTv_Android/index.jsp\""
+        }
+        //遂宁党建-tv
+        scslTV {
+            applicationId "com.igreatstone.partyconst.scsl"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            resValue "string", "app_name", "遂宁党建"
+            buildConfigField "String", "WEB_URL", "\"http://60.255.139.254:8195/partyJlTv_Android_shuining/index.jsp\""
+        }
+        //遂宁益农信-tv
+        scslynxTV {
+            applicationId "com.igreatstone.partyconst.scslynx"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            resValue "string", "app_name", "遂宁智慧党建"
+            buildConfigField "String", "WEB_URL", "\"http://124.232.153.82:8014/portal_suining/portal.jsp\""
+        }
+        //大邑东岳党建-触屏
+        scdydyTouch {
+            applicationId "com.igreatstone.partyconst.scdydy"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            resValue "string", "app_name", "东岳党建"
+            buildConfigField "String", "WEB_URL", "\"http://10.215.129.22:8022/partyBuilding_Touch/\""
+        }
+        //益农信-TV
+        ynxTV {
+            applicationId "com.igreatstone.ynx"
+            resValue "string", "app_name", "益农信"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            buildConfigField "String", "WEB_URL", "\"http://124.232.153.82:8014/portal/portal.jsp\""
+        }
+        //apk广元e家-TV
+        scgyejTV {
+            applicationId "com.igreatstone.scgyej"
+            resValue "string", "app_name", "apk广元e家"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            buildConfigField "String", "WEB_URL", "\"http://124.232.153.82:8014/gydyej_tv/index.html\""
+        }
+        //遂宁-益农信党教
+        scsldjTV {
+            applicationId "com.dj.ctv"
+            resValue "string", "app_name", "遂宁党教"
+            manifestPlaceholders = [icon:"@mipmap/app"]
+            buildConfigField "String", "WEB_URL", "\"http://124.232.153.82:8014/cadmin_scn_tv/jsp/home.jsp\""
+        }
+
+        //西南国际版权交易中心
+        banquanTV {
+            applicationId "com.igreatstone.banquan"
+            manifestPlaceholders = [icon:"@drawable/icon"]
+            resValue "string", "app_name", "西南国际版权交易中心"
+            buildConfigField "String", "WEB_URL", "\"http://60.255.48.162:8090/Copyright/page/\""
+        }
+
+        banquanTV2 {
+            applicationId "com.igreatstone.banquan"
+            manifestPlaceholders = [icon:"@drawable/icon"]
+            resValue "string", "app_name", "西南国际版权交易中心"
+            buildConfigField "String", "WEB_URL", "\"http://10.215.32.230:8090/Copyright/page/\""
+        }
+
+
+    }
+
+    //版本和包名控制
+    def currentVersionCode = getVersionCode()
+    defaultConfig {
+        //applicationId "com.touch.jldj"
+        minSdkVersion 17
+        targetSdkVersion 25
+        versionCode currentVersionCode
+        versionName currentVersionCode + ".0"
+        flavorDimensions "versionCode"
+        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //加入签名配置
+            signingConfig signingConfigs.config
+        }
+        debug {
+            //启用debug的buildType配置
+            debuggable true
+            //加入签名配置
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+    implementation 'cz.msebera.android:httpclient:4.3.6'
+
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    implementation 'com.github.ybq:Android-SpinKit:1.0.4'
+    testImplementation 'junit:junit:4.12'
+
+    //usage:https://github.com/Blankj/AndroidUtilCode/blob/master/utilcode/README-CN.md
+    implementation 'com.blankj:utilcode:1.15.0'
+
+    implementation 'com.google.code.gson:gson:2.8.2'
+}
+
+
+
+//自动修改version code
+def getVersionCode() {
+    def versionFile = file('version.properties')
+    if (versionFile.canRead()) {
+        def runTasksStr = gradle.startParameter.taskNames.toString()
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionFile))
+        def currAppId = getCurrentApplicationId() //渠道的APP ID
+        if(currAppId == ""){
+            //throw new GradleException("不能执行"+runTasksStr+"！请选择other/assemble*(Release|Debug)。")
+            return
+        }
+        Object obj = versionProps.get(currAppId)
+        if(obj == null){//如果不存在此包，添加属性
+            versionProps.setProperty(currAppId, "0")
+            versionProps.store(versionFile.newWriter(), null)
+        }
+        def versionCode = versionProps[currAppId].toInteger()
+        //仅在*Release(如assembleRelease）任务增加版本号
+        if(runTasksStr.contains("Release")){
+            versionProps[currAppId] = (++versionCode).toString()
+            versionProps.store(versionFile.newWriter(), null)
+            println currAppId+"增加版本："+versionCode
+        }
+        return versionCode
+    } else {
+        throw new GradleException("Could not find version.properties!")
+    }
+}
+
+//渠道的APP ID
+def getCurrentApplicationId() {
+    def currFlavor = getCurrentFlavor()
+    def outStr = ''
+    android.productFlavors.all { flavor ->
+        if (flavor.name == currFlavor)
+            outStr = flavor.getApplicationId()
+    }
+    return outStr
+}
+
+def getCurrentFlavor() {
+    Gradle gradle = getGradle()
+    String taskReqStr = gradle.getStartParameter().getTaskRequests().toString()
+    Pattern pattern
+    if (taskReqStr.contains("assemble")) {
+        pattern = Pattern.compile("assemble(\\w+)(Release|Debug)")
+    } else {
+        pattern = Pattern.compile("generate(\\w+)(Release|Debug)")
+    }
+    Matcher matcher = pattern.matcher(taskReqStr)
+    if (matcher.find()) {
+        String flavor = matcher.group(1)
+        // This makes first character to lowercase.
+        char[] c = flavor.toCharArray()
+        c[0] = Character.toLowerCase(c[0])
+        flavor = new String(c)
+        println "getCurrentFlavor:" + flavor
+        return flavor
+    } else {
+        println "getCurrentFlavor:cannot_find_current_flavor"
+        return ""
+    }
+}

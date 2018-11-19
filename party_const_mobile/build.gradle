@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 24
+
+    defaultConfig {
+        applicationId "com.igreatstone.partyconst"
+        minSdkVersion 17
+        targetSdkVersion 24
+        versionCode 3
+        versionName "3.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //android studio默认so文件加载目录为:src/main/jniLibs
+    //如在module的build.gradle按照如下方式,自定义了so文件加载目录请确保对应目录下只有armeabi目录
+    sourceSets {
+        main{
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '24.2.0'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation 'com.android.support:support-v4:24.2.0'
+    implementation 'com.android.support:appcompat-v7:24.2.0'
+    androidTestImplementation 'junit:junit:4.12'
+    //    compile 'org.xwalk:xwalk_core_library:21.51.546.6'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.lzy.net:okgo:+'
+    //    compile project(':jjdxm-ijkplayer')
+    //    compile rootProject.ext.jjdxm_v7
+    implementation project(':base_mobile_player_lib')
+    implementation 'com.jakewharton:butterknife:8.2.1'
+    implementation 'com.githang:status-bar-compat:0.7'
+    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release'
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
+}
